@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Generation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      textarea {
+        width: 100%;
+        height: 100px;
+        margin-bottom: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      #video-container {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Video Generation</h1>
+    <textarea id="input-text" placeholder="Enter your text here"></textarea>
+    <button onclick="generateVideo()">Generate Video</button>
+    <div id="video-container"></div>
+
+    <script>
+      async function generateVideo() {
+        const inputText = document.getElementById("input-text").value;
+        const videoContainer = document.getElementById("video-container");
+        videoContainer.innerHTML = "Generating video...";
+
+        try {
+          const response = await axios.post("http://localhost:10364/pipeline", {
+            words: inputText,
+          });
+
+          const videoBase64 = response.data.video_base64;
+          const videoElement = document.createElement("video");
+          videoElement.src = `data:video/mp4;base64,${videoBase64}`;
+          videoElement.controls = true;
+          videoElement.autoplay = true;
+          videoContainer.innerHTML = "";
+          videoContainer.appendChild(videoElement);
+        } catch (error) {
+          console.error("Error generating video:", error);
+          videoContainer.innerHTML =
+            "Error generating video. Please try again.";
+        }
+      }
+    </script>
+  </body>
+</html>
