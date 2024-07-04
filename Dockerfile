@@ -35,9 +35,6 @@ RUN ~/miniconda3/bin/conda create -n nerfstream python=3.10 -y \
 # Set pip source to use Aliyun mirrors
 RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 
-# Install Python requirements
-RUN ~/miniconda3/envs/nerfstream/bin/pip install -r requirements.txt
-
 # Install additional libraries
 RUN ~/miniconda3/envs/nerfstream/bin/pip install "git+https://github.com/facebookresearch/pytorch3d.git" \
  && ~/miniconda3/envs/nerfstream/bin/pip install tensorflow-gpu==2.8.0
