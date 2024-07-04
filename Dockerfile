@@ -32,23 +32,6 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
 RUN ~/miniconda3/bin/conda create -n nerfstream python=3.10 -y \
  && ~/miniconda3/bin/conda install pytorch==1.12.1 torchvision==0.13.1 cudatoolkit=11.3 -c pytorch -n nerfstream -y
 
-# Set pip source to use Aliyun mirrors
-RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
-
-# Install additional libraries
-RUN ~/miniconda3/envs/nerfstream/bin/pip install "git+https://github.com/facebookresearch/pytorch3d.git" \
- && ~/miniconda3/envs/nerfstream/bin/pip install tensorflow-gpu==2.8.0
-
-# Fix protobuf version
-RUN ~/miniconda3/envs/nerfstream/bin/pip uninstall protobuf -y \
- && ~/miniconda3/envs/nerfstream/bin/pip install protobuf==3.20.1
-
-# Install ffmpeg using conda-forge
-RUN ~/miniconda3/bin/conda install -c conda-forge ffmpeg -n nerfstream -y
-
-# Install application files
-RUN ~/miniconda3/envs/nerfstream/bin/pip install /
-
 # Clone SadTalker repository and install Python dependencies
 RUN git clone https://github.com/Winfredy/SadTalker.git \
  && ~/miniconda3/envs/nerfstream/bin/pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113 \
