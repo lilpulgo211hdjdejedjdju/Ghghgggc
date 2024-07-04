@@ -21,32 +21,21 @@ RUN apt-get update -yq --fix-missing \
     ffmpeg \
     python3-pip
 
-# Download and install Miniconda
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
- && sh Miniconda3-latest-Linux-x86_64.sh -b -u -p ~/miniconda3 \
- && ~/miniconda3/bin/conda init \
- && echo ". ~/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc \
- && echo "conda activate nerfstream" >> ~/.bashrc
-
-# Create conda environment
-RUN ~/miniconda3/bin/conda create -n nerfstream python=3.10 -y \
- && ~/miniconda3/bin/conda install pytorch==1.12.1 torchvision==0.13.1 cudatoolkit=11.3 -c pytorch -n nerfstream -y
+# Install Python packages
+RUN python3 -m pip install --upgrade pip \
+ && python3 -m pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113 \
+ && python3 -m pip install fastapi[all] onnxruntime-gpu loguru \
+ && python3 -m pip install httpcore==0.15 \
+ && python3 -m pip install git+https://github.com/suno-ai/bark.git \
+ && python3 -m pip install git+https://github.com/huggingface/transformers.git \
+ && rm -rf /root/.cache/pip/*
 
 # Clone SadTalker repository and install Python dependencies
 RUN git clone https://github.com/Winfredy/SadTalker.git \
- && ~/miniconda3/envs/nerfstream/bin/pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113 \
  && cd SadTalker \
  && mkdir checkpoints \
  && mkdir -p gfpgan/weights \
- && ~/miniconda3/envs/nerfstream/bin/pip install -r requirements.txt \
- && ~/miniconda3/envs/nerfstream/bin/pip install fastapi[all] onnxruntime-gpu loguru \
- && rm -rf /root/.cache/pip/*
-
-# Additional pip installations
-RUN ~/miniconda3/envs/nerfstream/bin/pip install httpcore==0.15 \
- && ~/miniconda3/envs/nerfstream/bin/pip install --upgrade pip \
- && ~/miniconda3/envs/nerfstream/bin/pip install git+https://github.com/suno-ai/bark.git \
- && ~/miniconda3/envs/nerfstream/bin/pip install git+https://github.com/huggingface/transformers.git
+ && python3 -m pip install -r requirements.txt
 
 # Set working directory and copy necessary files
 COPY main.py sadtalker_default.jpeg ./
