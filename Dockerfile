@@ -1,5 +1,5 @@
 # Define the base image
-ARG BASE_IMAGE=nvcr.io/nvidia/cuda:11.6.1-cudnn8-devel-ubuntu20.04
+ARG BASE_IMAGE=nvcr.io/nvidia/cuda:12.1.1-cudnn8-devel-ubuntu20.04
 FROM $BASE_IMAGE
 
 # Set working directory
@@ -23,7 +23,7 @@ RUN apt-get update -yq --fix-missing \
 
 # Install Python packages
 RUN python3 -m pip install --upgrade pip \
- && python3 -m pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113 \
+ && python3 -m pip install torch==1.12.1+cu121 torchvision==0.13.1+cu121 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu121 \
  && python3 -m pip install fastapi[all] onnxruntime-gpu loguru \
  && python3 -m pip install httpcore==0.15 \
  && python3 -m pip install git+https://github.com/suno-ai/bark.git \
