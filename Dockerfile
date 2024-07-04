@@ -4,10 +4,11 @@ FROM paidax/dev-containers:cuda11.6-py3.8
 # Set non-interactive frontend during build
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update packages and install ffmpeg
+# Update packages and install ffmpeg and NVIDIA toolkit
 RUN apt-get update -y && \
     apt-get install -y \
-    ffmpeg && \
+    ffmpeg \
+    nvidia-toolkit && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
